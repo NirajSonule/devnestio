@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 
 import connectDB from "./config/db.js";
+import authRouter from "./routes/authRoutes.js";
 
 dotenv.config();
 
@@ -18,9 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // routes
-app.get("/", (req, res) => {
-  res.send("Hello world");
-});
+app.use("/api/auth", authRouter);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Server running on port ${process.env.PORT || 3000}`);
