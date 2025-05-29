@@ -9,14 +9,14 @@ const register = async (req, res) => {
     const user_username = await User.findOne({ username });
     if (user_username) {
       return res
-        .status(401)
+        .status(409)
         .json({ success: false, message: "Username already exists" });
     }
 
     const user_email = await User.findOne({ email });
     if (user_email) {
       return res
-        .status(401)
+        .status(409)
         .json({ success: false, message: "Email already exists" });
     }
 
@@ -53,12 +53,16 @@ const login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(401).json({ success: false, message: "Invalid credentials" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      res.status(401).json({ success: false, message: "Invalid credentials" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
     }
 
     const token = generateToken(user._id);
