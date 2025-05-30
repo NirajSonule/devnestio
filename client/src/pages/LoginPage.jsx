@@ -1,9 +1,33 @@
+import { Link } from "react-router-dom";
 import Button from "../components/Button";
+import InputBox from "../components/InputBox";
 
 const LoginPage = () => {
   return (
-    <div className="">
-      <Button>Submit</Button>
+    <div className="w-full h-screen bg-dark-bg font-Inter flex justify-center items-center">
+      <div className="py-6 px-4 sm:px-12 bg-light-bg rounded-sm flex flex-col space-y-6">
+        <h2 className="text-2xl text-gray-200 font-bold">
+          Login to Your Account
+        </h2>
+        <form className="p-2 flex flex-col justify-center space-y-5">
+          <InputBox type="email" label="Email" placeholder="john@app.com" />
+          <InputBox
+            type="password"
+            label="Password"
+            placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
+          />
+          <Button state="primary">Login</Button>
+        </form>
+        <p className="text-sm text-gray-400 text-center">
+          Don't have account?{" "}
+          <Link
+            to="/register"
+            className="text-blue-400 hover:text-blue-500 cursor-pointer"
+          >
+            Sign up
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };
