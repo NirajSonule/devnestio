@@ -1,4 +1,4 @@
-const Button = ({ className, state, children, onClick }) => {
+const Button = ({ className, type, state, children, onClick }) => {
   const baseStyles = "py-2 px-6 rounded-md text-sm transition-all duration-200";
 
   const stateStyles = {
@@ -12,6 +12,7 @@ const Button = ({ className, state, children, onClick }) => {
 
   return (
     <button
+      type={type}
       className={`${baseStyles} ${stateStyles[state]}  ${className}`}
       onClick={onClick}
     >
