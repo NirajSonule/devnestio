@@ -2,40 +2,45 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import InputBox from "../components/InputBox";
-import { useAuth } from "../contexts/authContext.jsx";
-import { authValidation } from "../utils/validationSchema.js";
+import { useAuth } from "../contexts/AuthContext.jsx";
+import { loginValidation } from "../utils/validationSchema";
+import { useToast } from "../contexts/ToastContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { addToast } = useToast();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErros] = useState({});
-  const [formErrors, setFormErrors] = useState("");
+
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = { email, password };
-    const validationResult = authValidation.safeParse(formData);
+    const validationResult = loginValidation.safeParse(formData);
     if (!validationResult.success) {
       const formattedErrors = validationResult.error.format();
-      setErros(formattedErrors);
+      setErrors(formattedErrors);
       return;
     }
 
     try {
       const result = await login(email, password);
+      console.log("reached try");
       if (result.success) {
-        navigate("/");
+        addToast({ type: "primary", message: "Login Successful!" });
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
       } else {
         if (result.errors) {
-          setErros(result.errors);
-          setFormErrors("");
+          setErrors(result.errors);
         } else {
-          setErros({});
-          setFormErrors(result.message || "login failed");
-          console.log(formErrors);
+          setErrors({});
+          addToast({ type: "danger", message: result.message });
         }
       }
     } catch (error) {
@@ -58,7 +63,10 @@ const LoginPage = () => {
             label="Email"
             placeholder="john@app.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setErrors((prev) => ({ ...prev, email: undefined }));
+            }}
             error={errors.email?._errors?.[0]}
           />
           <InputBox
@@ -66,7 +74,10 @@ const LoginPage = () => {
             label="Password"
             placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setErrors((prev) => ({ ...prev, password: undefined }));
+            }}
             error={errors.password?._errors?.[0]}
           />
           <Button type="submit" state="primary">

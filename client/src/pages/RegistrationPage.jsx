@@ -2,27 +2,30 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import InputBox from "../components/InputBox";
-import { useAuth } from "../contexts/authContext.jsx";
-import { authValidation } from "../utils/validationSchema.js";
+import { useAuth } from "../contexts/AuthContext";
+import { registerValidation } from "../utils/validationSchema";
+import { useToast } from "../contexts/ToastContext";
 
 const RegistrationPage = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
+  const { addToast } = useToast();
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErros] = useState({});
-  const [formErrors, setFormErrors] = useState("");
+
+  const [errors, setErrors] = useState({});
   // const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = { username, email, password };
-    const validationResult = authValidation.safeParse(formData);
+    const validationResult = registerValidation.safeParse(formData);
     if (!validationResult.success) {
       const formattedErrors = validationResult.error.format();
-      setErros(formattedErrors);
+      setErrors(formattedErrors);
       return;
     }
 
@@ -30,15 +33,16 @@ const RegistrationPage = () => {
       const result = await register(username, email, password);
 
       if (result.success) {
-        navigate("/");
+        addToast({ type: "primary", message: "Account created successfully!" });
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
       } else {
         if (result.errors) {
-          setErros(result.errors);
-          setFormErrors("");
+          setErrors(result.errors);
         } else {
-          setErros({});
-          setFormErrors(result.message || "Registration Failed");
-          console.log(formErrors);
+          setErrors({});
+          addToast({ type: "danger", message: result.message });
         }
       }
     } catch (error) {
@@ -61,7 +65,7 @@ const RegistrationPage = () => {
             value={username}
             onChange={(e) => {
               setUsername(e.target.value);
-              setErros((prev) => ({ ...prev, username: undefined }));
+              setErrors((prev) => ({ ...prev, username: undefined }));
             }}
             error={errors.username?._errors?.[0]}
           />
@@ -72,7 +76,7 @@ const RegistrationPage = () => {
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
-              setErros((prev) => ({ ...prev, email: undefined }));
+              setErrors((prev) => ({ ...prev, email: undefined }));
             }}
             error={errors.email?._errors?.[0]}
           />
@@ -83,7 +87,7 @@ const RegistrationPage = () => {
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              setErros((prev) => ({ ...prev, password: undefined }));
+              setErrors((prev) => ({ ...prev, password: undefined }));
             }}
             error={errors.password?._errors?.[0]}
           />
