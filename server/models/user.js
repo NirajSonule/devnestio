@@ -48,7 +48,7 @@ const UserSchema = new mongoose.Schema(
     profile_image: { type: String },
     bio: { type: String },
     location: { type: String },
-    teach_stack: { type: String },
+    tech_stack: { type: String },
 
     links: LinksSchema,
     experience: [ExperienceSchema],
