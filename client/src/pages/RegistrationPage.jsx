@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import InputBox from "../components/InputBox";
 import { useAuth } from "../contexts/authContext.jsx";
+import { authValidation } from "../utils/validationSchema.js";
 
 const RegistrationPage = () => {
   const navigate = useNavigate();
@@ -17,6 +18,14 @@ const RegistrationPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const formData = { username, email, password };
+    const validationResult = authValidation.safeParse(formData);
+    if (!validationResult.success) {
+      const formattedErrors = validationResult.error.format();
+      setErros(formattedErrors);
+      return;
+    }
+
     try {
       const result = await register(username, email, password);
 
@@ -28,7 +37,7 @@ const RegistrationPage = () => {
           setFormErrors("");
         } else {
           setErros({});
-          setFormErrors(result.data.message || "Registration Failed");
+          setFormErrors(result.message || "Registration Failed");
           console.log(formErrors);
         }
       }
@@ -50,7 +59,10 @@ const RegistrationPage = () => {
             label="Username"
             placeholder="John"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => {
+              setUsername(e.target.value);
+              setErros((prev) => ({ ...prev, username: undefined }));
+            }}
             error={errors.username?._errors?.[0]}
           />
           <InputBox
@@ -58,7 +70,10 @@ const RegistrationPage = () => {
             label="Email"
             placeholder="john@app.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setErros((prev) => ({ ...prev, email: undefined }));
+            }}
             error={errors.email?._errors?.[0]}
           />
           <InputBox
@@ -66,7 +81,10 @@ const RegistrationPage = () => {
             label="Password"
             placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setErros((prev) => ({ ...prev, password: undefined }));
+            }}
             error={errors.password?._errors?.[0]}
           />
           <Button type="submit" state="primary">

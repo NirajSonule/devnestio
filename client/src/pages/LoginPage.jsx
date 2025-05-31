@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import InputBox from "../components/InputBox";
 import { useAuth } from "../contexts/authContext.jsx";
+import { authValidation } from "../utils/validationSchema.js";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -14,6 +15,14 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const formData = { email, password };
+    const validationResult = authValidation.safeParse(formData);
+    if (!validationResult.success) {
+      const formattedErrors = validationResult.error.format();
+      setErros(formattedErrors);
+      return;
+    }
 
     try {
       const result = await login(email, password);
