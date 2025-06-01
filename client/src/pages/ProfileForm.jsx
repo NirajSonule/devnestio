@@ -4,6 +4,7 @@ import InputBox from "../components/InputBox";
 import Button from "../components/Button";
 import { useUser } from "../contexts/UserContext";
 import { useToast } from "../contexts/ToastContext";
+import Loading from "../components/Loading";
 
 const ProfileForm = () => {
   const navigate = useNavigate();
@@ -27,6 +28,8 @@ const ProfileForm = () => {
   const [educationList, setEducationList] = useState([
     { degree: "", institution: "", duration: "" },
   ]);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleEducationChange = (index, field, value) => {
     const updated = [...educationList];
@@ -70,6 +73,7 @@ const ProfileForm = () => {
     setGithubUsername("John doe");
 
     try {
+      setIsLoading(true);
       const result = await submitProfile(
         profileImage,
         about,
@@ -80,6 +84,7 @@ const ProfileForm = () => {
         education,
         githubUsername
       );
+      setIsLoading(false);
 
       if (result.success) {
         addToast({
@@ -93,6 +98,7 @@ const ProfileForm = () => {
         addToast({ type: "danger", message: result.message });
       }
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
@@ -279,7 +285,7 @@ const ProfileForm = () => {
 
           <div className="flex flex-col sm:flex-row justify-between space-y-5 sm:space-y-0">
             <Button type="Submit" state="primary" onClick={handleSubmit}>
-              Submit
+              {isLoading ? <Loading /> : "Submit"}
             </Button>
             <Button type="Submit" state="secondary" onClick={handleSkip}>
               Skip

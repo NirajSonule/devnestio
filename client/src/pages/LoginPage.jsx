@@ -5,6 +5,7 @@ import InputBox from "../components/InputBox";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import { loginValidation } from "../utils/validationSchema";
 import { useToast } from "../contexts/ToastContext";
+import Loading from "../components/Loading.jsx";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
 
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,8 +30,9 @@ const LoginPage = () => {
     }
 
     try {
+      setIsLoading(true);
       const result = await login(email, password);
-      console.log("reached try");
+      setIsLoading(false);
       if (result.success) {
         addToast({ type: "primary", message: "Login Successful!" });
         setTimeout(() => {
@@ -44,6 +47,7 @@ const LoginPage = () => {
         }
       }
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
@@ -81,7 +85,7 @@ const LoginPage = () => {
             error={errors.password?._errors?.[0]}
           />
           <Button type="submit" state="primary">
-            Login
+            {isLoading ? <Loading /> : "Login"}
           </Button>
         </form>
         <p className="text-sm text-gray-400 text-center">

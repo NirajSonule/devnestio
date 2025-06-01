@@ -5,6 +5,7 @@ import InputBox from "../components/InputBox";
 import { useAuth } from "../contexts/AuthContext";
 import { registerValidation } from "../utils/validationSchema";
 import { useToast } from "../contexts/ToastContext";
+import Loading from "../components/Loading";
 
 const RegistrationPage = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const RegistrationPage = () => {
   const [password, setPassword] = useState("");
 
   const [errors, setErrors] = useState({});
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +31,9 @@ const RegistrationPage = () => {
     }
 
     try {
+      setIsLoading(true);
       const result = await register(username, email, password);
+      setIsLoading(false);
 
       if (result.success) {
         addToast({ type: "primary", message: "Account created successfully!" });
@@ -46,6 +49,7 @@ const RegistrationPage = () => {
         }
       }
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
@@ -92,7 +96,7 @@ const RegistrationPage = () => {
             error={errors.password?._errors?.[0]}
           />
           <Button type="submit" state="primary">
-            Sign up
+            {isLoading ? <Loading /> : "Sign up"}
           </Button>
         </form>
         <p className="text-sm text-gray-400 text-center">
