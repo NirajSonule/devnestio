@@ -35,7 +35,7 @@ const RegistrationPage = () => {
       if (result.success) {
         addToast({ type: "primary", message: "Account created successfully!" });
         setTimeout(() => {
-          navigate("/");
+          navigate("/onboarding");
         }, 1000);
       } else {
         if (result.errors) {

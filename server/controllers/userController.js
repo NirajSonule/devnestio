@@ -14,6 +14,8 @@ const profileForm = async (req, res) => {
     githubUsername,
   } = req.body;
 
+  console.log(experience, education);
+
   try {
     const updatedUser = await User.findByIdAndUpdate(
       userId,

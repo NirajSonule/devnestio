@@ -88,6 +88,23 @@ const login = async (req, res) => {
   }
 };
 
+// get user logic
+const getUser = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 // Logout logic
 const logout = async (req, res) => {
   res.clearCookie("token", {
@@ -102,4 +119,4 @@ const logout = async (req, res) => {
   });
 };
 
-export { register, login, logout };
+export { register, login, getUser, logout };
