@@ -284,10 +284,10 @@ const ProfileForm = () => {
           <hr className="my-5 border border-gray-700" />
 
           <div className="flex flex-col sm:flex-row justify-between space-y-5 sm:space-y-0">
-            <Button type="Submit" state="primary" onClick={handleSubmit}>
+            <Button type="submit" state="primary" onClick={handleSubmit}>
               {isLoading ? <Loading /> : "Submit"}
             </Button>
-            <Button type="Submit" state="secondary" onClick={handleSkip}>
+            <Button type="submit" state="secondary" onClick={handleSkip}>
               Skip
             </Button>
           </div>

@@ -2,10 +2,8 @@
 @import "tailwindcss";
 
 @theme {
-  /* Fonts */
   --font-Inter: "Inter", sans-serif;
 
-  /* Colors */
   --color-dark-bg: #1e1e2f;
   --color-light-bg: #2a2a3d;
 }

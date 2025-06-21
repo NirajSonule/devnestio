@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ToastProvider } from "./contexts/ToastContext";
 import LoginPage from "./pages/LoginPage";
@@ -12,26 +17,30 @@ const App = () => {
   return (
     <Router>
       <AuthProvider>
-        <UserProvider>
-          <ToastProvider>
+        <ToastProvider>
+          <UserProvider>
             <Routes>
               <Route path="/register" element={<RegistrationPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route
                 path="/onboarding"
-                element=<ProtectedRoute>
-                  <ProfileForm />
-                </ProtectedRoute>
+                element={
+                  <ProtectedRoute>
+                    <ProfileForm />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/dashboard"
-                element=<ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
               />
             </Routes>
-          </ToastProvider>
-        </UserProvider>
+          </UserProvider>
+        </ToastProvider>
       </AuthProvider>
     </Router>
   );
